@@ -1,0 +1,2 @@
+核心组件
+-- hotUpTCP 包含热更新升级的tcp监听组件 返回结构中包含*net.Listener用于生成http接收请求服务

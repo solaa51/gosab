@@ -1,0 +1,7 @@
+热更新tcp服务 返回更新结构 并且包含 *net.Listener 用于启动http服务
+
+生成http服务
+好处1. 允许热重启/升级
+好处2. 可将进程放入后台执行
+
+使用：hotUpTCP.NewHttpServer(":8080", handler)
