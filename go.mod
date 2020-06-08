@@ -1,4 +1,4 @@
-module gosab
+module github.com/solaa51/gosab
 
 go 1.14
 
