@@ -3,8 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"gosab/system/core/app"
-	"gosab/system/core/myContext"
+	"github.com/solaa51/gosab/src/controller"
+	"github.com/solaa51/gosab/system/core/app"
+	"github.com/solaa51/gosab/system/core/myContext"
 	"log"
 	"net/http"
 	"net/url"
@@ -122,7 +123,7 @@ func main() {
 }
 
 func init() {
-	APP = app.NewApp()
+	APP = app.NewApp("")
 }
 
 //进入守护进程

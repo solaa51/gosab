@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	slog "gosab/system/core/log"
+	slog "github.com/solaa51/gosab/system/core/log"
 	"log"
 	"net"
 	"net/http"

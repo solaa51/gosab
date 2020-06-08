@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"gosab/system/core/app"
-	"gosab/system/core/commonFunc"
-	"gosab/system/core/log"
+	"github.com/solaa51/gosab/system/core/app"
+	"github.com/solaa51/gosab/system/core/commonFunc"
+	"github.com/solaa51/gosab/system/core/log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -445,8 +445,6 @@ func (this *Context) TxtReturn(code int64, format string, a ...interface{}) {
 	}
 
 	str := strconv.FormatInt(code, 10) + "|" + msg
-
-	fmt.Println(str)
 
 	_, _ = fmt.Fprintf(this.Writer, str)
 }

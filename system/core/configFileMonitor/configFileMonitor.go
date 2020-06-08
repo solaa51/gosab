@@ -2,7 +2,7 @@ package configFileMonitor
 
 import (
 	"bufio"
-	"gosab/system/core/commonFunc"
+	"github.com/solaa51/gosab/system/core/commonFunc"
 	"log"
 	"os"
 	"sync"

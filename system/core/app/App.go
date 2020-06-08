@@ -1,10 +1,10 @@
 package app
 
 import (
-	"gosab/system/core/commonFunc"
-	"gosab/system/core/configFileMonitor"
-	"gosab/system/core/graceful"
-	slog "gosab/system/core/log"
+	"github.com/solaa51/gosab/system/core/commonFunc"
+	"github.com/solaa51/gosab/system/core/configFileMonitor"
+	"github.com/solaa51/gosab/system/core/graceful"
+	slog "github.com/solaa51/gosab/system/core/log"
 	"log"
 	"net/http"
 	"os"

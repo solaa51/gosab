@@ -2,7 +2,7 @@ package controller
 
 import (
 	"fmt"
-	"gosab/system/core/myContext"
+	"github.com/solaa51/gosab/system/core/myContext"
 )
 
 type Welcome struct {

@@ -2,7 +2,7 @@ package log
 
 import (
 	"fmt"
-	"gosab/system/core/commonFunc"
+	"github.com/solaa51/gosab/system/core/commonFunc"
 	"io"
 	"log"
 	"os"
