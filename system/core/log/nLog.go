@@ -56,7 +56,7 @@ func NewLog(env string, prefix string) *NLog {
 	dd := commonFunc.Date("Y-m-d", 0)
 
 	l.logDateName = l.LPrefix + dd
-	logFile := l.Path + "logs/" + l.LPrefix + l.logDateName + ".log"
+	logFile := l.Path + "logs/" + l.logDateName + ".log"
 
 	var err error
 	l.logFile, err = os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
