@@ -4,117 +4,53 @@ import (
 	"fmt"
 	"github.com/solaa51/gosab/system/core/commonFunc"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 )
 
-/**
-日志记录
-*/
+//第三版日志处理
 type NLog struct {
-	LPrefix string //日志文件前缀
-	Path    string
-
-	Env string //设置环境 本地和测试时  打印到控制台，线上环境则只输出到文件
-
-	muFile *sync.RWMutex //文件锁
-
-	logFile     *os.File //日志文件
-	logDateName string   //日志文件的日期  变更时修改logFile
+	sync.Mutex
+	prefix string
+	env string
 }
 
-func init() {
-	//判断logs文件夹是否存在
-	_, err := os.Stat("logs")
-	if err != nil {
-		if os.IsNotExist(err) {
-			//创建文件夹
-			if err := os.Mkdir("logs", os.ModePerm); err != nil {
-				log.Fatal("创建日志文件夹失败", err)
-				return
-			}
-		} else {
-			log.Fatal("检查日志文件夹出错", err)
-			return
-		}
-	}
+//文件名前缀
+func NewLog(env, prefix string) *NLog {
+	l := &NLog{}
+	l.prefix = prefix
+	l.env = env
+
+	return l
 }
 
-func NewLog(env string, prefix string) *NLog {
-	l := NLog{}
-	l.LPrefix = prefix
-	l.muFile = new(sync.RWMutex)
-	l.Path = commonFunc.GetAppDir()
-	l.Env = env
-
-	dd := commonFunc.Date("Y-m-d", 0)
-
-	l.logDateName = l.LPrefix + dd
-	logFile := l.Path + "logs/" + l.logDateName + ".log"
-
-	var err error
-	l.logFile, err = os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatal("打开日志文件时发生错误")
-	}
-
-	//定时处理日志文件 判断时间 关闭原有句柄 并重新赋值文件句柄
-	go func() {
-		t := time.NewTicker(time.Second * 10)
-		defer t.Stop()
-		for {
-			<-t.C
-			dd := commonFunc.Date("Y-m-d", 0)
-			logName := l.LPrefix + dd
-			if logName != l.logDateName {
-				fmt.Println("修改日志文件句柄" + l.logDateName + " => " + logName)
-				l.muFile.RLock()
-				l.logFile.Close() //关闭原来文件句柄
-				logFile := l.Path + "logs/" + l.LPrefix + l.logDateName + ".log"
-				l.logFile, _ = os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-				l.logDateName = logName
-				l.muFile.RUnlock()
-			}
-		}
-	}()
-
-	return &l
+func (l *NLog) Info(s string) {
+	l.echo("INFO", s)
 }
 
-func (this *NLog) Close() {
-	this.logFile.Close()
+func (l *NLog) Warn(s string) {
+	l.echo("WARN", s)
 }
 
-// "TRACE", "DEBUG", "INFO", "WARN", "ERROR"
-func (this *NLog) Info(s string) {
-	this.echo("INFO", s)
+func (l *NLog) Error(s string) {
+	l.echo("ERROR", s)
 }
 
-func (this *NLog) Warn(s string) {
-	this.echo("WARN", s)
+func (l *NLog) Trace(s string) {
+	l.echo("TRACE", s)
 }
 
-func (this *NLog) Error(s string) {
-	this.echo("ERROR", s)
+func (l *NLog) Debug(s string) {
+	l.echo("DEBUG", s)
 }
 
-func (this *NLog) Trace(s string) {
-	this.echo("TRACE", s)
-}
-
-func (this *NLog) Debug(s string) {
-	this.echo("DEBUG", s)
-}
-
-func (this *NLog) echo(prefix, s string) {
-	this.muFile.Lock()
-	defer this.muFile.Unlock()
+func (l *NLog) echo (flag, s string) {
+	l.Lock()
+	defer l.Unlock()
 
 	//| log.Lshortfile 输出的是 当前出错输出内容的行 没什么意义
 	var pc uintptr
@@ -131,16 +67,33 @@ func (this *NLog) echo(prefix, s string) {
 
 	fileName = filepath.Base(fileName)
 
-	nPrefix := prefix + " " + fileName + " " + funcName + " " + strconv.Itoa(line)
+	msg := flag + " " + fileName + " " + funcName + " " + strconv.Itoa(line) + " " + commonFunc.Date("Y-m-d H:i:s", 0) + " " + s + "\n"
 
-	//空环境 本地 测试 则也在标准输出 输出内容
-	var logIO io.Writer
-	if this.Env == "" || this.Env == "local" || this.Env == "test" {
-		logIO = io.MultiWriter(os.Stdout, this.logFile)
-	} else {
-		logIO = this.logFile
+	//获取文件
+	logDateName := l.prefix + commonFunc.Date("Y-m-d", 0)
+	logFileName := commonFunc.GetAppDir() + "logs/" + logDateName + ".log"
+
+	if _, err := os.Stat(logFileName); err != nil {
+		// 文件不存在,创建
+		_, err := os.Create(logFileName)
+		if err != nil {
+			panic(err)
+		}
 	}
 
-	logger := log.New(logIO, nPrefix+": ", log.Ldate|log.Ltime)
-	logger.Print(s)
+	logFile, err := os.OpenFile(logFileName, os.O_WRONLY, os.ModeAppend)
+	if err != nil {
+		panic("打开日志文件时发生错误")
+	}
+
+	//延迟关闭文件
+	defer logFile.Close()
+
+	//写入文件
+	n, _ := logFile.Seek(0, io.SeekEnd)
+	_, _ = logFile.WriteAt([]byte(msg), n)
+
+	if l.env == "local" || l.env == "test" {
+		fmt.Print(s)
+	}
 }
