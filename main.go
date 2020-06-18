@@ -109,9 +109,6 @@ func main() {
 
 	daemon(*d)
 
-	//清理资源
-	defer APP.Close()
-
 	//http handle 处理
 	handler := MyHandler{}
 

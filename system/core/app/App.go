@@ -179,11 +179,6 @@ func resetAppConfig(app *App, configFile string) {
 	app.StaticFiles = myTmpApp.StaticFiles
 }
 
-//关闭日志资源
-func (this *App) Close() {
-	this.Log.Close()
-}
-
 //检测当前环境下 可执行文件是否有更新，如果存在更新 则 给自己发送升级信号
 func (this *App) hasNewKillSelf() {
 	a, _ := filepath.Abs(os.Args[0])
