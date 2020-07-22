@@ -16,7 +16,7 @@ import (
 type NLog struct {
 	sync.Mutex
 	prefix string
-	env string
+	env    string
 }
 
 //文件名前缀
@@ -48,7 +48,7 @@ func (l *NLog) Debug(s string) {
 	l.echo("DEBUG", s)
 }
 
-func (l *NLog) echo (flag, s string) {
+func (l *NLog) echo(flag, s string) {
 	l.Lock()
 	defer l.Unlock()
 
@@ -94,6 +94,6 @@ func (l *NLog) echo (flag, s string) {
 	_, _ = logFile.WriteAt([]byte(msg), n)
 
 	if l.env == "local" || l.env == "test" {
-		fmt.Print(s)
+		fmt.Println(s)
 	}
 }
