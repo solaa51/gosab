@@ -74,7 +74,9 @@ func FindConfigPath(fi string) (string, error) {
 }
 
 //获取到可执行文件的绝对地址
-//TODO 需区分 go run 下执行 还是 go build 之后的可执行文件 按系统区分
+//调试环境下返回 源码的路径
+//正式环境下返回 可执行文件的路径
+//区分 go run 下执行 还是 go build 之后的可执行文件 按系统区分
 func GetAppDir() string {
 	var dir string
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0])) //返回绝对路径  filepath.Dir(os.Args[0])去除最后一个元素的路径
@@ -89,18 +91,17 @@ func GetAppDir() string {
 			dir, _ = os.Getwd()
 		}
 
-		return dir + "/"
+		return dir + string(os.PathSeparator)
 	case "windows":
 		if strings.Contains(dir, "\\Temp\\go-build") {
 			dir, _ = os.Getwd()
 		}
-		return dir + "/"
+		return dir + string(os.PathSeparator)
 	default:
-
 	}
 
 	//return strings.Replace(dir, "\\", "/", -1) + "/" //将\替换成/
-	return dir + "/"
+	return dir + string(os.PathSeparator)
 }
 
 //加载配置文件
