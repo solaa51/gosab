@@ -83,7 +83,7 @@ func (this *graceful) restart() error {
 func (this *graceful) singleHandle() {
 	//创建一个无阻塞信号 channel
 	ch := make(chan os.Signal, 1)
-	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP, syscall.SIGUSR2)
+	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	for {
 		sig := <-ch
 		ctx, _ := context.WithTimeout(context.Background(), time.Second*20)
@@ -93,7 +93,7 @@ func (this *graceful) singleHandle() {
 			signal.Stop(ch)
 			_ = this.Server.Shutdown(ctx) //平滑关闭原有连接
 			return
-		case syscall.SIGHUP, syscall.SIGUSR2:
+		case syscall.SIGHUP:
 			this.Log.Info("热重启服务启动")
 			fmt.Println("收到信号：", sig)
 			err := this.restart()
