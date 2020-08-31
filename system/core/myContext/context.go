@@ -270,7 +270,7 @@ func (this *Context) CheckParamString(param string, dec string, request bool, mi
 	num := int64(utf8.RuneCountInString(tmp))
 
 	//判断长度
-	if min > 0 {
+	if num > 0 && min > 0 {
 		if num < min {
 			return "", errors.New(dec + "最少" + strconv.FormatInt(min, 10) + "个字")
 		}
@@ -376,7 +376,7 @@ func (this *Context) YewuParamString(param string, dec string, request bool, min
 	num := int64(utf8.RuneCountInString(ps))
 
 	//判断长度
-	if min > 0 {
+	if num > 0 && min > 0 {
 		if num < min {
 			return "", errors.New(dec + "最少" + strconv.FormatInt(min, 10) + "个字")
 		}
