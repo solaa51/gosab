@@ -14,6 +14,7 @@ import (
 	"io/ioutil"
 	"log"
 	"math"
+	"math/rand"
 	"net"
 	"net/http"
 	"net/url"
@@ -413,4 +414,10 @@ func Mod(id int64) int64 {
 	shu := crc32.ChecksumIEEE([]byte(str))
 
 	return int64(math.Mod(float64(shu), 10))
+}
+
+//生成随机数[n - m]
+func randInt(start, end int64) int64 {
+	rand.Seed(time.Now().Unix())
+	return rand.Int63n(end-start) + start
 }
