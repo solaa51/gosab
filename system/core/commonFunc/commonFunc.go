@@ -417,7 +417,7 @@ func Mod(id int64) int64 {
 }
 
 //生成随机数[n - m]
-func randInt(start, end int64) int64 {
+func RandInt(start, end int64) int64 {
 	rand.Seed(time.Now().Unix())
 	return rand.Int63n(end-start) + start
 }
