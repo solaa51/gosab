@@ -417,7 +417,15 @@ func Mod(id int64) int64 {
 }
 
 //生成随机数[n - m]
-func RandInt(start, end int64) int64 {
+func RandInt(start, end int64) (int64, error) {
+	if end < start {
+		return 0, errors.New("结束位置必须大于开始位置")
+	}
+
+	if end == start {
+		return start, nil
+	}
+
 	rand.Seed(time.Now().Unix())
-	return rand.Int63n(end-start) + start
+	return rand.Int63n(end-start) + start, nil
 }
