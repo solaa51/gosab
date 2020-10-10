@@ -366,11 +366,17 @@ func GetPost(method string, sUrl string, data map[string]string, head map[string
 		return "", err
 	}
 
-	req.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36")
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+	if _, ok := head["User-Agent"]; !ok {
+		req.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36")
+	}
+	if _, ok := head["Content-Type"]; !ok {
+		req.Header.Add("User-Agent", "application/x-www-form-urlencoded; charset=UTF-8")
+	}
 	if head != nil {
 		for k, v := range head {
-			req.Header.Add(k, v)
+			if v != "" {
+				req.Header.Add(k, v)
+			}
 		}
 	}
 
@@ -421,7 +427,6 @@ func GetPostRequest(method string, sUrl string, data map[string]string, head map
 		return nil, err
 	}
 
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 	if _, ok := head["User-Agent"]; !ok {
 		req.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36")
 	}
@@ -430,7 +435,9 @@ func GetPostRequest(method string, sUrl string, data map[string]string, head map
 	}
 	if head != nil {
 		for k, v := range head {
-			req.Header.Add(k, v)
+			if v != "" {
+				req.Header.Add(k, v)
+			}
 		}
 	}
 
