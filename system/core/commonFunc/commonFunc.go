@@ -394,6 +394,55 @@ func GetPost(method string, sUrl string, data map[string]string, head map[string
 	return string(body), nil
 }
 
+/**
+发送get 或 post请求 获取数据 返回response和error
+*/
+func GetPostRequest(method string, sUrl string, data map[string]string, head map[string]string, cookie []*http.Cookie) (*http.Response, error) {
+	client := &http.Client{
+		CheckRedirect: func(req *http.Request, via []*http.Request) error { //禁止自动跳转
+			return http.ErrUseLastResponse
+		},
+	}
+
+	//请求体数据
+	var postBody *strings.Reader
+	if data != nil {
+		pData := url.Values{}
+		for k, v := range data {
+			pData.Add(k, v)
+		}
+		postBody = strings.NewReader(pData.Encode())
+	} else {
+		postBody = strings.NewReader("")
+	}
+
+	req, err := http.NewRequest(method, sUrl, postBody)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+	if _, ok := head["User-Agent"]; !ok {
+		req.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36")
+	}
+	if _, ok := head["Content-Type"]; !ok {
+		req.Header.Add("User-Agent", "application/x-www-form-urlencoded; charset=UTF-8")
+	}
+	if head != nil {
+		for k, v := range head {
+			req.Header.Add(k, v)
+		}
+	}
+
+	if cookie != nil {
+		for _, c := range cookie {
+			req.AddCookie(c)
+		}
+	}
+
+	return client.Do(req)
+}
+
 //utf8编码 转 gbk编码
 func UTF82GBK(str []byte) ([]byte, error) {
 	r := transform.NewReader(bytes.NewReader(str), simplifiedchinese.GBK.NewEncoder())
