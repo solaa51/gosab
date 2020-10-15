@@ -482,6 +482,6 @@ func RandInt(start, end int64) (int64, error) {
 		return start, nil
 	}
 
-	rand.Seed(time.Now().Unix())
+	rand.Seed(time.Now().UnixNano())
 	return rand.Int63n(end-start) + start, nil
 }
