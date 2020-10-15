@@ -473,7 +473,7 @@ func Mod(id int64) int64 {
 	return int64(math.Mod(float64(shu), 10))
 }
 
-//生成随机数[n - m]
+//生成随机数[n - m)
 func RandInt(start, end int64) (int64, error) {
 	if end < start {
 		return 0, errors.New("结束位置必须大于开始位置")
