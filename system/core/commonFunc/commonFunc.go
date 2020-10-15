@@ -3,6 +3,7 @@ package commonFunc
 import (
 	"bytes"
 	"crypto/md5"
+	"crypto/rand"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -14,7 +15,7 @@ import (
 	"io/ioutil"
 	"log"
 	"math"
-	"math/rand"
+	"math/big"
 	"net"
 	"net/http"
 	"net/url"
@@ -482,6 +483,10 @@ func RandInt(start, end int64) (int64, error) {
 		return start, nil
 	}
 
-	rand.Seed(time.Now().UnixNano())
-	return rand.Int63n(end-start) + start, nil
+	n, _ := rand.Int(rand.Reader, big.NewInt(end-start))
+
+	//rand.Seed(time.Now().UnixNano())
+	//return rand.Int63n(end-start) + start, nil
+
+	return n.Int64(), nil
 }
