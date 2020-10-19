@@ -404,10 +404,14 @@ func GetPost(method string, sUrl string, data map[string]string, head map[string
 /**
 发送get 或 post请求 获取数据 返回response和error
 */
-func GetPostRequest(method string, sUrl string, data map[string]string, head map[string]string, cookie []*http.Cookie) (*http.Response, error) {
+func GetPostRequest(method string, sUrl string, data map[string]string, head map[string]string, cookie []*http.Cookie, redirect bool) (*http.Response, error) {
 	client := &http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error { //禁止自动跳转
-			return http.ErrUseLastResponse
+			if redirect {
+				return nil
+			} else {
+				return http.ErrUseLastResponse
+			}
 		},
 	}
 
