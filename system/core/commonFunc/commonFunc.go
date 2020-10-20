@@ -340,6 +340,12 @@ func LocalIPV4() string {
 	return ""
 }
 
+//获取外网IP
+func InternetIp() string {
+	ip, _ := GetPost("GET", "http://ip.cip.cc", nil, nil, nil)
+	return strings.TrimSpace(ip)
+}
+
 /**
 发送get 或 post请求 获取数据
 */
