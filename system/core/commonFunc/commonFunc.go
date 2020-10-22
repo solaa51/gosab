@@ -377,7 +377,7 @@ func GetPost(method string, sUrl string, data map[string]string, head map[string
 		req.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36")
 	}
 	if _, ok := head["Content-Type"]; !ok {
-		req.Header.Add("User-Agent", "application/x-www-form-urlencoded; charset=UTF-8")
+		req.Header.Add("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 	}
 	if head != nil {
 		for k, v := range head {
@@ -442,7 +442,7 @@ func GetPostRequest(method string, sUrl string, data map[string]string, head map
 		req.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36")
 	}
 	if _, ok := head["Content-Type"]; !ok {
-		req.Header.Add("User-Agent", "application/x-www-form-urlencoded; charset=UTF-8")
+		req.Header.Add("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 	}
 	if head != nil {
 		for k, v := range head {
