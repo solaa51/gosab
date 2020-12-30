@@ -110,7 +110,7 @@ func (this *graceful) singleHandle() {
 }
 
 //启动
-func Start(addr string, log *slog.NLog, mux *http.ServeMux, httpsPem string, httpsKey string, gracefulReload bool) error {
+func Start(addr string, log *slog.NLog, mux http.Handler, httpsPem string, httpsKey string, gracefulReload bool) error {
 	var ln net.Listener
 	var err error
 	if gracefulReload { //启动命令中包含参数 热重启时，从socket文件描述符 重新启动一个监听
@@ -128,11 +128,13 @@ func Start(addr string, log *slog.NLog, mux *http.ServeMux, httpsPem string, htt
 	}
 
 	server := &http.Server{
-		Addr:         addr,
-		Handler:      mux,
-		TLSConfig:    nil,
-		ReadTimeout:  time.Second * 30,
-		WriteTimeout: time.Second * 30,
+		Addr:              addr,
+		Handler:           mux,
+		TLSConfig:         nil,
+		ReadTimeout:       time.Second * 30, //读取包括请求体的整个请求的最大时长
+		WriteTimeout:      time.Second * 30, //写响应允许的最大时长 30秒程序未能输出 则退出http连接
+		IdleTimeout:       time.Second * 30, //当开启了保持活动状态（keep-alive）时允许的最大空闲时间
+		ReadHeaderTimeout: time.Second * 2,  //允许读请求头的最大时长
 	}
 
 	gf := &graceful{

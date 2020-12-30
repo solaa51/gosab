@@ -1,6 +1,7 @@
 package commonFunc
 
 import (
+	"bufio"
 	"bytes"
 	"crypto/md5"
 	"crypto/rand"
@@ -499,4 +500,32 @@ func RandInt(start, end int64) (int64, error) {
 	//return rand.Int63n(end-start) + start, nil
 
 	return n.Int64(), nil
+}
+
+//追加写入文件内容给
+//如果fileName为绝对路径则直接使用 如果为相对路径则获取当前程序路径
+func WriteFile(fileName string, content []byte) error {
+	//判断fileName路径
+	var file string
+	if filepath.IsAbs(fileName) {
+		file = fileName
+	} else {
+		dir := GetAppDir()
+		file = dir + fileName
+	}
+
+	fileInfo, err := os.OpenFile(file, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0755)
+	if err != nil {
+		return err
+	}
+
+	writer := bufio.NewWriter(fileInfo)
+	_, err = writer.Write(content)
+	if err != nil {
+		return err
+	}
+
+	_ = writer.Flush()
+
+	return nil
 }
