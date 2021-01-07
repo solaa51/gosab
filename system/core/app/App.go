@@ -75,9 +75,7 @@ func (this *App) Start(handler http.Handler, gracefulReload bool) error {
 		httpsKey = this.CONFIGDIR + this.HTTPSKEY
 	}
 
-	timeOutHandler := http.TimeoutHandler(mux, time.Second*30, "处理超时了")
-
-	return graceful.Start(":"+this.PORT, this.Log, timeOutHandler, httpsPem, httpsKey, gracefulReload)
+	return graceful.Start(":"+this.PORT, this.Log, mux, httpsPem, httpsKey, gracefulReload)
 }
 
 //判断class是否能通过ip检查
