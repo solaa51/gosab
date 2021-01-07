@@ -75,6 +75,9 @@ func (this *App) Start(handler http.Handler, gracefulReload bool) error {
 		httpsKey = this.CONFIGDIR + this.HTTPSKEY
 	}
 
+	//不能使用这个 虽然拥有了超时 但是会影响websocket类型转换
+	//timeOutHandler := http.TimeoutHandler(mux, time.Second*30, "处理超时了")
+
 	return graceful.Start(":"+this.PORT, this.Log, mux, httpsPem, httpsKey, gracefulReload)
 }
 
