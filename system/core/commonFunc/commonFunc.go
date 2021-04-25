@@ -373,6 +373,7 @@ func GetPost(method string, sUrl string, data map[string]string, head map[string
 	if err != nil {
 		return "", err
 	}
+	req.Close = true
 
 	if _, ok := head["User-Agent"]; !ok {
 		req.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36")
