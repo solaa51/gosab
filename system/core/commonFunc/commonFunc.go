@@ -527,6 +527,6 @@ func WriteFile(fileName string, content []byte) error {
 	}
 
 	_ = writer.Flush()
-
+	//shenm
 	return nil
 }
